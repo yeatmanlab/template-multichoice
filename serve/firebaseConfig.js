@@ -20,4 +20,4 @@ const productionFirebaseConfig = {
   appId: "1:757277423033:web:d6e204ee2dd1047cb77268",
 };
 
-export const firebaseConfig = ROAR_DB === "production" ? productionFirebaseConfig : devFirebaseConfig;
+export const firebaseConfig = ENV === "production" ? productionFirebaseConfig : devFirebaseConfig;

@@ -8,7 +8,7 @@ import {
 import assets from "../../assets.json";
 import { Cat } from "@bdelab/jscat";
 
-const bucketURI = "https://storage.googleapis.com/roar-survey";
+const bucketURI = "https://storage.googleapis.com/egma-math";
 
 export const mediaAssets = generateAssetObject(assets, bucketURI);
 export const preloadTrials = createPreloadTrials(assets, bucketURI).default;

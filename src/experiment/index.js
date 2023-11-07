@@ -22,13 +22,7 @@ class MultichoiceTask {
       this.displayElement,
     );
     store.session.set("config", config);
-    await loadCorpus(
-      config.practiceCorpus,
-      config.stimulusCorpus,
-      config.sequentialPractice,
-      config.sequentialStimulus,
-    );
-
+    await loadCorpus(config);
     return buildExperiment(config);
   }
 

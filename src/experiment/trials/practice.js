@@ -3,7 +3,7 @@ import store from "store2";
 import { mediaAssets } from "../experimentSetup";
 import "../i18n";
 import { isPractice } from "./subTask";
-import { storyByLabel } from "./storySupport";
+import { storyByLabel } from "./storySetup";
 
 export const practiceIncorrectFeedback = {
   type: jsPsychAudioMultiResponse,

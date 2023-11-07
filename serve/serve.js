@@ -3,22 +3,25 @@ import { onAuthStateChanged, signInAnonymously } from "firebase/auth";
 import MultichoiceTask from "../src/experiment/index";
 import { firebaseConfig } from "./firebaseConfig";
 import i18next from "i18next";
-
+import { stringToBoolean } from "../src/experiment/helperFunctions";
 // Import necessary for async in the top level of the experiment script
 import "regenerator-runtime/runtime";
 
 const queryString = new URL(window.location).search;
 const urlParams = new URLSearchParams(queryString);
-const taskName = urlParams.get("taskName") ?? "my-task";
+const taskName = urlParams.get("taskName") ?? 'egma-math'
 const practiceCorpus = urlParams.get("practiceCorpus");
 const stimulusCorpus = urlParams.get("stimulusCorpus");
 const storyCorpus = urlParams.get("storyCopus")
 const buttonLayout = urlParams.get("buttonLayout");
+const numOfPracticeTrials = urlParams.get("practiceTrials");
 const numberOfTrials = urlParams.get("trials") === null ? null : parseInt(urlParams.get("trials"), 10);
+const stimulusBlocks = urlParams.get("blocks") === null ? null : parseInt(urlParams.get("blocks"), 10);
 // Boolean parameters
-const skipInstructions = urlParams.get("skip")?.toLocaleLowerCase() !== "true";
-const sequentialPractice = urlParams.get("sequentialPractice")?.toLocaleLowerCase() !== "false";
-const sequentialStimulus = urlParams.get("sequentialStimulus")?.toLocaleLowerCase() === "true";
+const story = stringToBoolean(urlParams.get("story"));
+const skipInstructions = stringToBoolean(urlParams.get("skip"), true)
+const sequentialPractice = stringToBoolean(urlParams.get("sequentialPractice"), true)
+const sequentialStimulus = stringToBoolean(urlParams.get("sequentialStimulus"), true)
 const { language } = i18next;
 
 // @ts-ignore
@@ -47,8 +50,11 @@ onAuthStateChanged(appKit.auth, (user) => {
       sequentialPractice,
       sequentialStimulus,
       buttonLayout,
+      numOfPracticeTrials,
       numberOfTrials,
-      storyCorpus
+      story,
+      storyCorpus,
+      stimulusBlocks,
     };
 
     const taskInfo = {

@@ -1,10 +1,7 @@
 const path = require("path");
 const webpack = require("webpack");
-// eslint-disable-next-line import/no-extraneous-dependencies
 const { merge } = require("webpack-merge");
-// eslint-disable-next-line import/no-extraneous-dependencies
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-// const { EsbuildPlugin } = require('esbuild-loader')
 
 const commonConfig = {
   optimization: {
@@ -87,8 +84,6 @@ const commonConfig = {
               header: true,
               dynamicTyping: true,
               skipEmptyLines: true,
-              // name: "[name].[ext]",
-              // outputPath: "corpora",
             },
           },
         ],
@@ -131,13 +126,13 @@ const developmentConfig = merge(webConfig, {
 });
 
 module.exports = async (env, args) => {
-  const roarDB = env.dbmode === "production" ? "production" : "development";
+  const dbEnv = env.dbmode === "production" ? "production" : "development";
 
   const envDependentConfig = {
     plugins: [
       new webpack.ids.HashedModuleIdsPlugin(), // so that file hashes don't change unexpectedly
       new webpack.DefinePlugin({
-        ROAR_DB: JSON.stringify(roarDB),
+        ENV: JSON.stringify(dbEnv),
       }),
       new webpack.ProvidePlugin({
         process: "process/browser",

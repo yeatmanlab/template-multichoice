@@ -7,8 +7,6 @@ export const shuffle = (array) => {
     const j = Math.floor(Math.random() * (i + 1)); // random index from 0 to i
 
     // swap elements array[i] and array[j]
-    // use "destructuring assignment" syntax
-    // eslint-disable-next-line no-param-reassign
     [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
   }
   return shuffledArray;
@@ -68,4 +66,11 @@ export function addGlowingClass(textContent, className) {
       button.classList.add(className);
     }
   });
+}
+
+export function stringToBoolean(str, defaultValue = false) {
+  if (str === null || str === undefined) {
+    return defaultValue;
+  }
+  return str.trim().toLowerCase() === "true";
 }

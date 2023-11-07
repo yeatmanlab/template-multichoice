@@ -1,15 +1,15 @@
 {
   "projects": {
-    "default": "gse-roar-assessment"
+    "default": "my-project"
   },
   "targets": {
-    "gse-roar-assessment": {
+    "my-project": {
       "hosting": {
-        "multichoice": [
-          "roar-multichoice"
+        "task": [
+          "task"
         ],
-        "testmultichoice": [
-          "roar-multichoice-testing"
+        "test": [
+          "task-testing"
         ]
       }
     }

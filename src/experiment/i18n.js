@@ -1,6 +1,5 @@
 import i18next from "i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
-import enStoryLion from "../stimuli/en/morphology-storyLion.csv";
 import enTranslations from "../locales/en/translation.json";
 
 const languageDetector = new LanguageDetector();
@@ -34,20 +33,4 @@ i18next
       },
     },
   });
-export const multichoiceCorpus = {
-  en: {
-    task: {
-      morphology: enStoryLion,
-    },
-  },
-  es: {
-    surveyPractice: "",
-    surveyMain: "",
-    storyLion: "",
-  },
-  it: {
-    surveyPractice: "",
-    surveyMain: "",
-    storyLion: "",
-  },
-};
+

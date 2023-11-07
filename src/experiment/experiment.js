@@ -30,14 +30,15 @@ import {
   introAndInstructions,
   practiceDone,
   createStory,
-} from "./trials/storySupport";
+} from "./trials/storySetup";
 
 export function buildExperiment(config) {
-  // Initialize jsPsych and timeline
   initTrialSaving(config);
   const initialTimeline = initTimeline(config);
 
-  createStory();
+  if (config.story) {
+    createStory();
+  }
 
   const timeline = [preloadTrials, ...initialTimeline.timeline];
 
@@ -99,16 +100,19 @@ export function buildExperiment(config) {
 
 
       timeline.push(surveyBlock);
+
       // add breaks
-      if (i + 1 !== stimulusCounts.length) {
-        //  // no break on the last block of the subtask
-        //   timeline.push(surveyBlock);
-        // } else {
-        // add stimulus and break
-        timeline.push(storyBreakList[breakNum]);
-        breakNum += 1;
-        if (breakNum === storyBreakList.length) {
-          breakNum = 0;
+      if (config.story) {
+        if (i + 1 !== stimulusCounts.length) {
+          // no break on the last block of the subtask
+          //   timeline.push(surveyBlock);
+          // } else {
+          // add stimulus and break
+          timeline.push(storyBreakList[breakNum]);
+          breakNum += 1;
+          if (breakNum === storyBreakList.length) {
+            breakNum = 0;
+          }
         }
       }
     }
@@ -119,28 +123,27 @@ export function buildExperiment(config) {
 
   initializeCat();
 
-  const currentTask = store.session.get("config").task;
-
-  // survey intro
-  timeline.push(introAndInstructions[currentTask]);
+  // story intro
+  console.log({introAndInstructions})
+  if (config.story) timeline.push(introAndInstructions);
 
   pushSubTaskToTimeline(
     subTaskInitPractice,
     setupPracticeTrial,
-    getPracticeCount("practice"),
+    [config.numOfPracticeTrials],
     "practice",
   ); // Practice Trials
-
-  timeline.push(practiceDone); // Practice done
+  
+  if (config.story) timeline.push(practiceDone);
 
   pushSubTaskToTimeline(
     subTaskInitMain,
     setupMainTrial,
-    getStimulusCount(config.userMode),
+    getStimulusCount(),
     "stimulus",
   ); // Stimulus Trials
 
-  timeline.push(endTrial); // End Task
+  if (config.story) timeline.push(endTrial); // End Task
   timeline.push(exitFullscreen);
 
   return { jsPsych, timeline };

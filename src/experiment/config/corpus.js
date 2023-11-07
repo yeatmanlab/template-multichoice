@@ -1,13 +1,12 @@
 import i18next from "i18next";
 import "../i18n";
-import { multichoiceCorpus } from "../i18n";
 import { shuffle } from "../helperFunctions";
 import Papa from "papaparse";
 import _compact from 'lodash/compact'
 import store from "store2";
 import "regenerator-runtime/runtime";
 
-export let corpora, storyActive;
+export let corpora
 
 let maxStimlulusTrials = 0;
 
@@ -22,6 +21,7 @@ const transformCSV = (csvInput, isPractice) => {
       difficulty: isPractice ? row.difficulty : row.b,
       prompt: row.prompt
     };
+    // Array of distractors with falsey and empty string values removed
     newRow.distractors = _compact([newRow.distractor1, newRow.distractor2, newRow.distractor3]),
     accum.push(newRow);
     if (!isPractice) maxStimlulusTrials += 1;
@@ -29,19 +29,27 @@ const transformCSV = (csvInput, isPractice) => {
   }, []);
 }
 
-export async function loadCorpus(
-  practiceCorpus,
-  stimulusCorpus,
-  sequentialPractice,
-  sequentialStimulus,
-) {
-  const currentTask = store.session.get("config").task;
-  const csvAssets = {
-    // storyLion: multichoiceCorpus[i18next.language].storyLion,
-    storyLion: multichoiceCorpus[i18next.language].task[currentTask],
-  };
+const transformStoryCSV = (csvInput) => {
+  return csvInput.reduce((accum, row) => {
+    const newRow = {
+      trialName: row.trialName,
+      imageName: row.imageName,
+      imageAlt: row.imageAlt,
+      audioName: row.audioName,
+      duration: row.duration,
+      header: row.header,
+      topText: row.topText,
+      bottomText: row.bottomText,
+    };
+    accum.push(newRow);
+    return accum;
+  }, []);
+}
 
-  let practice, stimulus;
+export async function loadCorpus(config) {
+  const { practiceCorpus, stimulusCorpus, task, storyCorpus, story, sequentialPractice, sequentialStimulus } = config
+
+  let practiceData, stimulusData, storyData;
 
   function downloadCSV(url, i) {
     return new Promise((resolve, reject) => {
@@ -51,9 +59,11 @@ export async function loadCorpus(
         skipEmptyLines: true,
         complete: function (results) {
           if (i === 0) {
-            practice = transformCSV(results.data, true);
+            practiceData = transformCSV(results.data, true);
+          } else if (i == 1) {
+            stimulusData = transformCSV(results.data, false);
           } else {
-            stimulus = transformCSV(results.data, false);
+            storyData = transformStoryCSV(results.data)
           }
           resolve(results.data);
         },
@@ -64,20 +74,23 @@ export async function loadCorpus(
     });
   }
 
-  async function parseMultipleCSVs(urls) {
+  async function parseCSVs(urls) {
     const promises = urls.map((url, i) => downloadCSV(url, i));
     return Promise.all(promises);
   }
 
   async function fetchData() {
     const urls = [
-      // lang (en) will be dynamic
-      `https://storage.googleapis.com/egma-math/en/corpora/${practiceCorpus}.csv`,
-      `https://storage.googleapis.com/egma-math/en/corpora/${stimulusCorpus}.csv`,
+      `https://storage.googleapis.com/${task}/${i18next.language}/corpora/${practiceCorpus}.csv`,
+      `https://storage.googleapis.com/${task}/${i18next.language}/corpora/${stimulusCorpus}.csv`,
     ];
 
+    if (story) {
+      urls.push(`https://storage.googleapis.com/${task}/${i18next.language}/corpora/${storyCorpus}.csv`)
+    }
+
     try {
-      await parseMultipleCSVs(urls);
+      await parseCSVs(urls);
       store.session.set("maxStimulusTrials", maxStimlulusTrials);
     } catch (error) {
       console.error("Error:", error);
@@ -86,44 +99,15 @@ export async function loadCorpus(
 
   await fetchData();
 
-  const transformStoryCSV = (csvInput) =>
-    csvInput.reduce((accum, row) => {
-      const newRow = {
-        label: row.label,
-        screenStyle: row.screenStyle,
-        imageName: row.imageName,
-        imageAlt: row.imageAlt,
-        audioName: row.audioName,
-        audioGap: row.audioGap,
-        buttonName: row.buttonName,
-        duration: row.duration,
-        header1: row.header1,
-        text1: row.text1,
-        text2: row.text2,
-      };
-      accum.push(newRow);
-      return accum;
-    }, []);
-
   const csvTransformed = {
-    practice: sequentialPractice ? practice : shuffle(practice),
-    stimulus: sequentialStimulus ? stimulus : shuffle(stimulus),
-    storyLion: transformStoryCSV(csvAssets.storyLion),
+    practice: sequentialPractice ? practiceData : shuffle(practiceData),
+    stimulus: sequentialStimulus ? stimulusData : shuffle(stimulusData),
+    story: storyData && transformStoryCSV(storyData),
   };
 
   corpora = {
     practice: csvTransformed.practice,
     stimulus: csvTransformed.stimulus,
-    story: csvTransformed.storyLion,
+    story: csvTransformed.story,
   };
-
-
-  // Introduction & Story
-  const storyAll = {
-    name: "corpusStory",
-    corpusStory: csvTransformed.storyLion,
-  };
-
-  // future: set storyActive to the desired story
-  storyActive = storyAll.corpusStory;
 }

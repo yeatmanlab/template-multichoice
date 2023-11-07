@@ -5,12 +5,11 @@
       "shared": [
         "tryAgain.mp3",
         "thatsRight.mp3",
+
         "intro.mp3",
         "ins.mp3",
         "surveyPractice.mp3",
         "surveyPostPractice.mp3",
-        "intro-cva.mp3",
-        "practice-cva.mp3",
         "great-job-click.mp3",
         "break1.mp3",
         "break2.mp3",
@@ -22,6 +21,9 @@
     },
     "shared": [
       "nullAudio.mp3",
+      "select.mp3",
+      "goButton.png",
+
       "coin.mp3",
       "countdown0.mp3",
       "countdown1.mp3",
@@ -29,12 +31,8 @@
       "countdown3.mp3",
       "fail.mp3",
       "fairyCoin.mp3",
-      "select.mp3",
       "coin_bag.gif",
-      "ROARLion.gif",
-      "goButton.png",
-      "clickButton.jpg",
-      "clickButtonCva.jpg"
+      "ROARLion.gif"
     ]
   }
 }

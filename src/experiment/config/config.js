@@ -24,8 +24,7 @@ const initStore = (config) => {
   if (
     // future adaptive modes
     config.userMode === "fullAdaptive" ||
-    config.userMode === "shortAdaptive" ||
-    config.task !== "cva"
+    config.userMode === "shortAdaptive"
   ) {
     // use adaptive algorithm to select next item
     store.session.set("itemSelect", "mfi");
@@ -41,12 +40,8 @@ const initStore = (config) => {
   store.session.set("trialNumSubtask", 0); // counter for trials in subtask
   store.session.set("trialNumTotal", 0); // counter for trials in experiment
 
-  // variables related to stimulus and response
-  store.session.set("nextStimulus", null);
-  store.session.set("response", "");
-
   // variables to track current state of the experiment
-  store.session.set("currentTrialCorrect", true); // return true or false
+  store.session.set("currentTrialCorrect", true); 
   store.session.set("coinTrackingIndex", 0);
 
   // running computations
@@ -60,75 +55,44 @@ const initStore = (config) => {
 
   // this should be the last set before return
   store.session.set("initialized", true);
-
-  return store.session;
 };
 
-// Stimulus timing options in milliseconds
-const stimulusTimeOptions = [null, 350, 1000, 2000];
-// Fixation presentation time options in milliseconds
-const fixationTimeOptions = [1000, 2000, 25000];
-// Trial completion time options in milliseconds
-const trialTimeOptions = [null, 5000, 8000, 100000];
 
-// get size of pratice blocks
-export const getPracticeCount = (practiceType) => {
-  const stimulusCountMap = {
-    // this table is indexed by practiceType and returns a list with the number of trials in each block
-    // userMode: [block1, block2, ...blockN]
-    practice: [3],
-    stimulus: [5, 5, 5],
-  };
+function createBlocks(numOfBlocks, numOfTrials) {
+  // Minimum number of trials. Can change to whatever.
+  if (numOfTrials < 10) numOfTrials = 10;
+  const baseFraction = Math.floor(numOfTrials / numOfBlocks);
+  const remainder = Math.round(numOfTrials % numOfBlocks);
 
-  return stimulusCountMap[practiceType];
-};
+  const blocks = [];
 
-// This is based on stimulusCountMap. It does not need to be 3.
-function divideByThree(num) {
-  // Minimum number of trials, also random. Can change to whatever.
-  if (num < 9) num = 9;
-  const baseFraction = Math.floor(num / 3);
-  const remainder = num % 3;
-
-  // Create an array filled with the base fraction
-  const fractions = [baseFraction, baseFraction, baseFraction];
+  for (let i = 0; i < numOfBlocks; i++) {
+    blocks.push(baseFraction)
+  }
 
   // Distribute the remainder among the first few fractions
   for (let i = 0; i < remainder; i++) {
-    fractions[i]++;
+    blocks[i]++;
   }
 
-  return fractions;
+  return blocks;
 }
 
 // get size of blocks
 export const getStimulusCount = (userMode) => {
-  const numberOfTrials = store.session.get("config").numberOfTrials;
+  const { numberOfTrials, stimulusBlocks } = store.session.get("config")
   const maxNumberOfTrials = store.session.get("maxStimulusTrials");
 
   let countList;
 
-  if (numberOfTrials) {
-    if (numberOfTrials > maxNumberOfTrials) {
-      countList = divideByThree(maxNumberOfTrials);
-    } else {
-      countList = divideByThree(numberOfTrials);
-    }
-
-    store.session.set("stimulusCountList", countList);
-    return countList;
+  if (numberOfTrials > maxNumberOfTrials) {
+    countList = createBlocks(stimulusBlocks, maxNumberOfTrials);
+  } else {
+    countList = createBlocks(stimulusBlocks, numberOfTrials);
   }
 
-  const stimulusCountMap = {
-    // this table is indexed by userMode and returns a list with the number of trials in each block
-    // userMode: [block1, block2, ...blockN]
-    fullAdaptive: [7, 7, 6],
-    fullRandom: [17, 17, 17],
-    testRandom: [7, 7, 6],
-    demo: [3, 3, 3], // 9 letters with 2 breaks
-  };
-  store.session.set("stimulusCountList", [10, 10, 10]);
-  return [10, 10, 10];
+  store.session.set("stimulusCountList", countList);
+  return countList;
 };
 
 export const initConfig = async (
@@ -137,10 +101,7 @@ export const initConfig = async (
   userParams,
   displayElement,
 ) => {
-  const cleanParams = _omitBy(
-    _omitBy({ ...gameParams, ...userParams }, _isNull),
-    _isUndefined,
-  );
+  const cleanParams = _omitBy(_omitBy({ ...gameParams, ...userParams }, _isNull), _isUndefined);
 
   const {
     // Setting default userMode to fullAdaptive, which uses mfi item selection rather than random
@@ -156,7 +117,10 @@ export const initConfig = async (
     buttonLayout,
     numberOfTrials,
     storyCorpus,
-    taskName = "egma-math",
+    taskName,
+    stimulusBlocks,
+    numOfPracticeTrials,
+    story
   } = cleanParams;
 
   language !== "en" && i18next.changeLanguage(language);
@@ -166,25 +130,21 @@ export const initConfig = async (
     userMetadata: { ...userMetadata, },
     audioFeedback: audioFeedback || "neutral",
     skipInstructions: skipInstructions ?? true,
-    timing: {
-      stimulusTimePracticeOnly: stimulusTimeOptions[0], // null as default for practice trial only
-      stimulusTime: stimulusTimeOptions[1],
-      fixationTime: fixationTimeOptions[0],
-      trialTimePracticeOnly: trialTimeOptions[0],
-      trialTime: trialTimeOptions[0],
-    },
     startTime: new Date(),
     firekit,
     displayElement: displayElement || null,
-    // name of the csv files in the bucket
+    // name of the csv files in the storage bucket
     practiceCorpus: practiceCorpus ?? "math-item-bank-practice-pz",
     stimulusCorpus: stimulusCorpus ?? "math-item-bank-pz",
     sequentialPractice: sequentialPractice ?? true,
     sequentialStimulus: sequentialStimulus ?? true,
     buttonLayout: buttonLayout || "default",
-    numberOfTrials,
-    storyCorpus: storyCorpus ?? 'lion-story',
-    task: taskName ?? "egma",
+    numberOfTrials: numberOfTrials ?? 10,
+    storyCorpus: storyCorpus ?? 'story-lion',
+    task: taskName ?? 'egma-math',
+    stimulusBlocks: stimulusBlocks ?? 3,
+    numOfPracticeTrials: numOfPracticeTrials ?? 2,
+    story
   };
 
   const updatedGameParams = Object.fromEntries(

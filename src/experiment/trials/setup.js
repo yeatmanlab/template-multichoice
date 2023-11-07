@@ -28,7 +28,7 @@ const setupTrials = setupData.map((trial, i) => {
     },
     prompt: "",
     choices: "NO_KEYS",
-    trial_duration: 10, // store.session.get("config").timing.fixationTime, //TODO fix
+    trial_duration: 10,
 
     data: {
       task: "fixation",

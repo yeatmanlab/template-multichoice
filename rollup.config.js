@@ -5,7 +5,6 @@ import terser from "@rollup/plugin-terser";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import postcss from "rollup-plugin-postcss";
 
-// import pkg from "./package.json" assert { type: "json" };
 
 export default {
   input: "src/experiment/index.js",
@@ -24,7 +23,7 @@ export default {
   output: [
     {
       dir: "lib",
-      name: "@bdelab/roar-survey",
+      name: "my-task",
       entryFileNames: "[name].[hash].js",
       chunkFileNames: "[name].[hash].js",
       format: "es",
