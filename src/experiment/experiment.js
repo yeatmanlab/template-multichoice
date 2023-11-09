@@ -1,7 +1,6 @@
 import "regenerator-runtime/runtime";
 import store from "store2";
 import {
-  getPracticeCount,
   getStimulusCount,
   initTrialSaving,
   initTimeline,
@@ -18,11 +17,7 @@ import {
 } from "./trials/stimulus";
 import { setupMainTrial, setupPracticeTrial } from "./trials/setup";
 import { exitFullscreen } from "./trials/fullScreen";
-import {
-  subTaskComplete,
-  subTaskInitMain,
-  subTaskInitPractice,
-} from "./trials/subTask";
+import { subTaskInitStimulus, subTaskInitPractice, } from "./trials/subTask";
 import { ifPracticeCorrect, ifPracticeIncorrect } from "./trials/practice";
 import {
   endTrial,
@@ -98,15 +93,12 @@ export function buildExperiment(config) {
         };
       }
 
-
       timeline.push(surveyBlock);
 
       // add breaks
       if (config.story) {
         if (i + 1 !== stimulusCounts.length) {
           // no break on the last block of the subtask
-          //   timeline.push(surveyBlock);
-          // } else {
           // add stimulus and break
           timeline.push(storyBreakList[breakNum]);
           breakNum += 1;
@@ -115,16 +107,13 @@ export function buildExperiment(config) {
           }
         }
       }
-    }
+    } 
 
-    // end of the subtask
-    timeline.push(subTaskComplete);
   };
 
   initializeCat();
-
+  
   // story intro
-  console.log({introAndInstructions})
   if (config.story) timeline.push(introAndInstructions);
 
   pushSubTaskToTimeline(
@@ -136,8 +125,9 @@ export function buildExperiment(config) {
   
   if (config.story) timeline.push(practiceDone);
 
+
   pushSubTaskToTimeline(
-    subTaskInitMain,
+    subTaskInitStimulus,
     setupMainTrial,
     getStimulusCount(),
     "stimulus",

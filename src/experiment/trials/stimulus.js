@@ -63,7 +63,6 @@ const trialsMapped = trialDataParams.map((trial, i) => {
     </div>`,
     prompt_above_buttons: true,
     button_choices: () => {
-      // Experiment logic should not be happening in trial parameters
       const stimulus = store.session.get("nextStimulus");
       const { target, distractors } = stimulus;
 
@@ -110,13 +109,6 @@ const trialsMapped = trialDataParams.map((trial, i) => {
       } else {
         addItemToSortedStoreList("incorrectItems", store.session("target"));
       }
-
-      // update adaptive algorithm
-      // cat.updateAbilityEstimate({a: 1, b: nextStimulus.difficulty, c: 0.25, d: 1}, store.session('response'));
-      // console.log(cat.theta);
-      // console.log(cat.thetaSE);
-
-      // cat2.updateAbilityEstimate({a: 1, b: nextStimulus.difficulty, c: 0.5, d: 1}, store.session('response'));
 
       jsPsych.data.addDataToLastTrial({
         // specific to this trial

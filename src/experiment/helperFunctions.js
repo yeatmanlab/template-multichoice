@@ -1,5 +1,6 @@
 import store from "store2";
 import { jsPsych } from "./jsPsych";
+import { cat } from './experimentSetup'
 
 export const shuffle = (array) => {
   const shuffledArray = [...array];
@@ -74,3 +75,25 @@ export function stringToBoolean(str, defaultValue = false) {
   }
   return str.trim().toLowerCase() === "true";
 }
+
+// This function reads the corpus, calls the adaptive algorithm to select
+// the next item, stores it in a session variable, and removes it from the corpus
+// corpusType is the name of the subTask's corpus within corpusLetterAll[]
+
+export const getStimulus = (corpusType) => {
+  let corpus, itemSuggestion;
+
+  // read the current version of the corpus
+  corpus = store.session.get("corpora");
+
+  // choose stimulus
+  itemSuggestion = cat.findNextItem(corpus[corpusType]);
+
+
+  // store the item for use in the trial
+  store.session.set("nextStimulus", itemSuggestion.nextStimulus);
+
+  // update the corpus with the remaining unused items
+  corpus[corpusType] = itemSuggestion.remainingStimuli;
+  store.session.set("corpora", corpus);
+};

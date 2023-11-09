@@ -1,6 +1,6 @@
 /* eslint-disable arrow-body-style */
 import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
-import { getStimulus } from "./getStimulus";
+import { getStimulus } from "../helperFunctions";
 
 // choosing the next stimulus from the corpus occurs during the fixation trial
 // prior to the actual display of the stimulus, where user response is collected

@@ -17,7 +17,6 @@ export const isTouchScreen = getDevice() === "mobile";
 export let cat;
 
 export const initializeCat = () => {
-  // initialize adaptive testing module
   cat = new Cat({
     method: "MLE",
     // minTheta: -6,

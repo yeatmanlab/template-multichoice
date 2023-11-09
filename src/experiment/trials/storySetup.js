@@ -13,41 +13,23 @@ export let storyByLabel,
 
 export function createStory() {
 
-  function createScreenHtml(content) {
-    // if (content.screenStyle === "speechBubble") {
-      return `
-        <div class="lion-gif-container">
-          <h1 class="speechbubble-header"> ${content.header} </h1>
-          <p class="speechbubble-text"> ${content.topText} </p>
-          <p class="speechbubble-text"> ${content?.bottomText} </p>
-          <img class="roar-lion" src=${
-            mediaAssets.images[content.imageName]
-          } alt=${content.imageAlt}"/>
-        </div>
-      `;
-    // if (content.screenStyle === "captionBelowImage") {
-    //   return `
-    //   <div class="gif-container">
-    //     <h1 class="mid-centered-header" style="color:#8C1515"> ${
-    //       content.header
-    //     } </h1>
-    //     <p class="mid-centered-text" style="color:#8C1515"> ${
-    //       content.topText
-    //     } </p>
-    //     <img class="device-instructions" src=${
-    //       mediaAssets.images[content.imageName]
-    //     } alt=${content.imageAlt}"/>
-    //   </div>
-    // `;
-    // }
+  function createHTML(content) {
+    return (`
+      <div class="prompt-container">
+        <h1 class="prompt-header"> ${content.header} </h1>
+        <p class="prompt-top-text"> ${content.topText} </p>
+        <img class="task-graphic" src=${mediaAssets.images[content.imageName]} alt=${content.imageAlt}"/>
+        <p class="prompt-bottom-text"> ${content.bottomText} </p>
+      </div>
+    `);
   }
 
   function createStoryTrial(row) {
-    const screenHtml = createScreenHtml(row);
+    
     return {
       type: jsPsychAudioButtonResponse,
       stimulus: mediaAssets.audio[row.audioName],
-      prompt: screenHtml,
+      prompt: createHTML(row),
       choices: () => ["hi"],
       button_html: () =>
         `<img class="go-button" src=${mediaAssets.images.goButton} alt="button"/>`,
@@ -55,23 +37,18 @@ export function createStory() {
   }
 
   // Create a dictionary to store story trials indexed by label
-  storyByLabel = [];
+  storyByLabel = {};
 
-  // StoryActive is read from a csv file in config
+
   // note filenames for image and audio must start with a lowercase letter
-  console.log(corpora.story)
   corpora.story.forEach((row) => {
-    const { label } = row;
+    const { trialName } = row;
     const storyTrial = createStoryTrial(row);
 
-    if (!storyByLabel[label]) {
-      storyByLabel[label] = [];
-    }
-
-    storyByLabel[label] = storyTrial;
+    storyByLabel[trialName] = storyTrial;
   });
 
-  //  storyByLabel contains the html for the story organized by label
+
   introAndInstructions = {
     timeline: [
       storyByLabel.intro,

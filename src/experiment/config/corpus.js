@@ -9,6 +9,7 @@ import "regenerator-runtime/runtime";
 export let corpora
 
 let maxStimlulusTrials = 0;
+let maxPracticeTrials = 0
 
 const transformCSV = (csvInput, isPractice) => {
   return csvInput.reduce((accum, row) => {
@@ -23,8 +24,15 @@ const transformCSV = (csvInput, isPractice) => {
     };
     // Array of distractors with falsey and empty string values removed
     newRow.distractors = _compact([newRow.distractor1, newRow.distractor2, newRow.distractor3]),
+
     accum.push(newRow);
-    if (!isPractice) maxStimlulusTrials += 1;
+
+    if (!isPractice) {
+      maxStimlulusTrials += 1;
+    } else {
+      maxPracticeTrials += 1
+    }
+
     return accum;
   }, []);
 }
@@ -47,7 +55,7 @@ const transformStoryCSV = (csvInput) => {
 }
 
 export async function loadCorpus(config) {
-  const { practiceCorpus, stimulusCorpus, task, storyCorpus, story, sequentialPractice, sequentialStimulus } = config
+  const { practiceCorpus, stimulusCorpus, task, storyCorpus, story, sequentialPractice, sequentialStimulus, numOfPracticeTrials } = config
 
   let practiceData, stimulusData, storyData;
 
@@ -92,6 +100,10 @@ export async function loadCorpus(config) {
     try {
       await parseCSVs(urls);
       store.session.set("maxStimulusTrials", maxStimlulusTrials);
+
+      if (numOfPracticeTrials > maxPracticeTrials) config.numOfPracticeTrials = maxPracticeTrials 
+
+      store.session.set('config', config)
     } catch (error) {
       console.error("Error:", error);
     }
@@ -102,7 +114,7 @@ export async function loadCorpus(config) {
   const csvTransformed = {
     practice: sequentialPractice ? practiceData : shuffle(practiceData),
     stimulus: sequentialStimulus ? stimulusData : shuffle(stimulusData),
-    story: storyData && transformStoryCSV(storyData),
+    story: storyData || null,
   };
 
   corpora = {
@@ -110,4 +122,6 @@ export async function loadCorpus(config) {
     stimulus: csvTransformed.stimulus,
     story: csvTransformed.story,
   };
+
+  store.session.set("corpora", corpora);
 }

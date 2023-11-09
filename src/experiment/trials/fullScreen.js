@@ -4,20 +4,8 @@ import fscreen from "fscreen";
 import i18next from "i18next";
 import "../i18n";
 
-const fullScreenTrialData = [
-  {
-    onFinish: () => {
-      // document.body.style.cursor = "none";
-    },
-  },
-  {
-    onFinish: () => {
-      // document.body.style.cursor = "none";
-    },
-  },
-];
 
-const fullScreenTrials = fullScreenTrialData.map((trial) => ({
+export const enterFullscreen = {
   type: jsPsychFullScreen,
   fullscreen_mode: true,
   message: () =>
@@ -29,14 +17,10 @@ const fullScreenTrials = fullScreenTrialData.map((trial) => ({
   on_start: () => {
     document.body.style.cursor = "default";
   },
-  on_finish: trial.onFinish,
-}));
-
-export const enterFullscreen = fullScreenTrials[0];
-const reenterFullscreen = fullScreenTrials[1];
+}
 
 export const ifNotFullscreen = {
-  timeline: [reenterFullscreen],
+  timeline: [enterFullscreen],
   conditional_function: () => fscreen.fullscreenElement === null,
 };
 

@@ -4,7 +4,6 @@ import _isNull from "lodash/isNull";
 import _isUndefined from "lodash/isUndefined";
 import i18next from "i18next";
 import { enterFullscreen } from "../trials/fullScreen";
-import { corpora } from "./corpus";
 import { jsPsych } from "../jsPsych";
 
 const makePid = () => {
@@ -21,28 +20,17 @@ const initStore = (config) => {
     return store.session;
   }
 
-  if (
-    // future adaptive modes
-    config.userMode === "fullAdaptive" ||
-    config.userMode === "shortAdaptive"
-  ) {
-    // use adaptive algorithm to select next item
-    store.session.set("itemSelect", "mfi");
-  } else {
-    store.session.set("itemSelect", "random");
-  }
+  store.session.set("itemSelect", "random");
 
   // Counting variables
   store.session.set("practiceIndex", 0);
   store.session.set("currentBlockIndex", 0); // counter for breaks within subtask
-  store.session.set("subTaskName", ""); // init to "" so getNextSubTask will work
 
   store.session.set("trialNumSubtask", 0); // counter for trials in subtask
   store.session.set("trialNumTotal", 0); // counter for trials in experiment
 
   // variables to track current state of the experiment
   store.session.set("currentTrialCorrect", true); 
-  store.session.set("coinTrackingIndex", 0);
 
   // running computations
   store.session.set("subtaskCorrect", 0);
@@ -50,10 +38,6 @@ const initStore = (config) => {
   store.session.set("correctItems", []);
   store.session.set("incorrectItems", []);
 
-  // working copy of the three corpuses (items are removed as they are used)
-  store.session.set("corpora", corpora);
-
-  // this should be the last set before return
   store.session.set("initialized", true);
 };
 
@@ -104,8 +88,6 @@ export const initConfig = async (
   const cleanParams = _omitBy(_omitBy({ ...gameParams, ...userParams }, _isNull), _isUndefined);
 
   const {
-    // Setting default userMode to fullAdaptive, which uses mfi item selection rather than random
-    // userMode,
     userMetadata = {},
     audioFeedback,
     language = i18next.language,
@@ -120,13 +102,13 @@ export const initConfig = async (
     taskName,
     stimulusBlocks,
     numOfPracticeTrials,
-    story
+    story,
   } = cleanParams;
+
 
   language !== "en" && i18next.changeLanguage(language);
 
   const config = {
-    // userMode: userMode ?? "fullRandom",
     userMetadata: { ...userMetadata, },
     audioFeedback: audioFeedback || "neutral",
     skipInstructions: skipInstructions ?? true,
@@ -214,15 +196,11 @@ export const initTrialSaving = (config) => {
 };
 
 export const initTimeline = (config) => {
-  // If the participant's ID was **not** supplied through the query string, then
-  // ask the user to fill out a form with their ID, class and school.
-
   const initialTimeline = [enterFullscreen];
 
   const beginningTimeline = {
     timeline: initialTimeline,
     on_timeline_finish: async () => {
-      // eslint-disable-next-line no-param-reassign
       config.pid = config.pid || makePid();
       await config.firekit.updateUser({
         assessmentPid: config.pid,
