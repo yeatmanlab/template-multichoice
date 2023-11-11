@@ -83,12 +83,10 @@ export function stringToBoolean(str, defaultValue = false) {
 export const getStimulus = (corpusType) => {
   let corpus, itemSuggestion;
 
-  // read the current version of the corpus
   corpus = store.session.get("corpora");
 
   // choose stimulus
   itemSuggestion = cat.findNextItem(corpus[corpusType]);
-
 
   // store the item for use in the trial
   store.session.set("nextStimulus", itemSuggestion.nextStimulus);
@@ -97,3 +95,25 @@ export const getStimulus = (corpusType) => {
   corpus[corpusType] = itemSuggestion.remainingStimuli;
   store.session.set("corpora", corpus);
 };
+
+export const prepareChoices = (target, distractors) => {
+  // randomly select a location for the correct answer
+  const randIndex = Math.floor(Math.random() * distractors.length + 1);
+
+  // randomize the order of the distractors
+  const stimulus = shuffle(distractors);
+  let choices = [];
+  for (let i = 0; i < distractors.length; i++) {
+    choices.push(stimulus[i]);
+  }
+
+  // insert the target
+  choices.splice(randIndex, 0, target);
+
+  return {
+    target: target,
+    choices: choices,
+    correctResponseIndx: randIndex,
+  };
+};
+

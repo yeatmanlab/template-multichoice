@@ -2,9 +2,8 @@ import jsPsychCallFunction from "@jspsych/plugin-call-function";
 import store from "store2";
 
 
-export const isPractice = () => {
-  const currentSubTask = store.session.get("subTaskName");
-  if (currentSubTask === "practice") {
+export const isPractice = (subTask) => {
+  if (subTask === "EGMA-practice") {
     return true;
   }
   return false;

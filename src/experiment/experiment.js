@@ -1,24 +1,16 @@
 import "regenerator-runtime/runtime";
 import store from "store2";
-import {
-  getStimulusCount,
-  initTrialSaving,
-  initTimeline,
-} from "./config/config";
-
+import { getStimulusCount, initTrialSaving, initTimeline, } from "./config/config";
 // setup
 import { jsPsych } from "./jsPsych";
 import { preloadTrials, initializeCat } from "./experimentSetup";
 // trials
-import {
-  ifRealTrialResponse,
-  practiceTrials,
-  stimulusTrials,
-} from "./trials/stimulus";
+import { stimulus } from "./trials/stimulus";
 import { setupMainTrial, setupPracticeTrial } from "./trials/setup";
 import { exitFullscreen } from "./trials/fullScreen";
 import { subTaskInitStimulus, subTaskInitPractice, } from "./trials/subTask";
-import { ifPracticeCorrect, ifPracticeIncorrect } from "./trials/practice";
+import { practiceFeedback } from "./trials/practiceFeedback";
+import { audioFeedback } from "./trials/audioFeedback";
 import {
   endTrial,
   storyBreakList,
@@ -46,23 +38,18 @@ export function buildExperiment(config) {
     subTaskInitBlock,
     fixationBlock,
     stimulusCounts,
-    trialType,
   ) => {
     // begin the subtask
     timeline.push(subTaskInitBlock);
     // loop through the list of trials per block within the subtest
     for (let i = 0; i < stimulusCounts.length; i++) {
       // add trials to the block (this is the core procedure for each trial)
-      let surveyBlock;
-
-      if (trialType === "practice") {
-        surveyBlock = {
+      const surveyBlock = {
           timeline: [
             fixationBlock,
-            practiceTrials,
-            ifPracticeCorrect,
-            ifPracticeIncorrect,
-            ifRealTrialResponse,
+            stimulus,
+            practiceFeedback,
+            audioFeedback
           ],
           conditional_function: () => {
             if (stimulusCounts[i] === 0) {
@@ -72,26 +59,7 @@ export function buildExperiment(config) {
             return true;
           },
           repetitions: stimulusCounts[i],
-        };
-      } else {
-        surveyBlock = {
-          timeline: [
-            fixationBlock,
-            stimulusTrials,
-            ifPracticeCorrect,
-            ifPracticeIncorrect,
-            ifRealTrialResponse,
-          ],
-          conditional_function: () => {
-            if (stimulusCounts[i] === 0) {
-              return false;
-            }
-            store.session.set("currentBlockIndex", i);
-            return true;
-          },
-          repetitions: stimulusCounts[i],
-        };
-      }
+      };
 
       timeline.push(surveyBlock);
 
@@ -120,7 +88,6 @@ export function buildExperiment(config) {
     subTaskInitPractice,
     setupPracticeTrial,
     [config.numOfPracticeTrials],
-    "practice",
   ); // Practice Trials
   
   if (config.story) timeline.push(practiceDone);
@@ -130,7 +97,6 @@ export function buildExperiment(config) {
     subTaskInitStimulus,
     setupMainTrial,
     getStimulusCount(),
-    "stimulus",
   ); // Stimulus Trials
 
   if (config.story) timeline.push(endTrial); // End Task

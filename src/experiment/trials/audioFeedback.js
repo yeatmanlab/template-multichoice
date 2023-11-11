@@ -2,7 +2,7 @@ import jsPsychAudioKeyboardResponse from "@jspsych/plugin-audio-keyboard-respons
 import store from "store2";
 import { mediaAssets } from "../experimentSetup";
 
-export const audioResponse = {
+const audioResponse = {
   type: jsPsychAudioKeyboardResponse,
   stimulus: () => {
     if (
@@ -25,4 +25,9 @@ export const audioResponse = {
   choices: "NO_KEYS",
   trial_ends_after_audio: true,
   prompt: "",
+};
+
+export const audioFeedback = {
+  timeline: [audioResponse],
+  conditional_function: () => store.session.get("nextStimulus").source === 'EGMA-practice'
 };

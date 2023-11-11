@@ -1,4 +1,3 @@
-/* eslint-disable import/no-cycle */
 import store from "store2";
 import {
   createPreloadTrials,
