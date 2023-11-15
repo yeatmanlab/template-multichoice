@@ -20,7 +20,8 @@ const transformCSV = (csvInput, isPractice) => {
       distractor2: row.distractor2 || row.Distractor2 || row.distractor_2,
       distractor3: row.distractor3 || row.Distractor3 || row.distractor_3,
       difficulty: isPractice ? row.difficulty : row.b,
-      prompt: row.prompt
+      prompt: row.prompt,
+      source: row.source
     };
     // Array of distractors with falsey and empty string values removed
     newRow.distractors = _compact([newRow.distractor1, newRow.distractor2, newRow.distractor3]),

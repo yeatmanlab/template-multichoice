@@ -41,9 +41,8 @@ export function buildExperiment(config) {
   ) => {
     // begin the subtask
     timeline.push(subTaskInitBlock);
-    // loop through the list of trials per block within the subtest
+
     for (let i = 0; i < stimulusCounts.length; i++) {
-      // add trials to the block (this is the core procedure for each trial)
       const surveyBlock = {
           timeline: [
             fixationBlock,

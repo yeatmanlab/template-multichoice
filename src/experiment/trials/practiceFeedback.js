@@ -2,7 +2,6 @@ import jsPsychAudioMultiResponse from "@jspsych-contrib/plugin-audio-multi-respo
 import store from "store2";
 import { mediaAssets } from "../experimentSetup";
 import "../i18n";
-import { isPractice } from "./subTask";
 
 export const practiceFeedbackTrial = {
   type: jsPsychAudioMultiResponse,
@@ -56,8 +55,6 @@ export const practiceFeedbackTrial = {
 
 export const practiceFeedback = {
   timeline: [ practiceFeedbackTrial ],
-  conditional_function: () => {
-    console.log('source: ', store.session.get("nextStimulus").source)
-    return store.session.get("nextStimulus").source === 'EGMA-practice'}
+  conditional_function: () => store.session.get("nextStimulus").source === 'EGMA-practice'
 }
 

@@ -110,6 +110,10 @@ export const prepareChoices = (target, distractors) => {
   // insert the target
   choices.splice(randIndex, 0, target);
 
+  store.session.set("target", target);
+  store.session.set("correctResponseIndx", randIndex);
+  store.session.set("choices", choices);
+
   return {
     target: target,
     choices: choices,

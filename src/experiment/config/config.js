@@ -8,10 +8,11 @@ import { jsPsych } from "../jsPsych";
 
 const makePid = () => {
   let text = "";
-  const possible =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  for (let i = 0; i < 16; i += 1)
+  const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  
+  for (let i = 0; i < 16; i += 1) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
   return text;
 };
 
@@ -173,23 +174,6 @@ export const initTrialSaving = (config) => {
         data,
       );
     }
-  });
-
-  // Add a special error handler that writes javascript errors to a special trial
-  // type in the Firestore database
-  window.addEventListener("error", (e) => {
-    const { msg, url, lineNo, columnNo, error } = e;
-
-    config.firekit?.writeTrial({
-      task: "error",
-      lastTrial: jsPsych.data.getLastTrialData().trials[0],
-      message: String(msg),
-      source: url || null,
-      lineNo: String(lineNo || null),
-      colNo: String(columnNo || null),
-      error: JSON.stringify(error || null),
-      timeStamp: new Date().toISOString(),
-    });
   });
 
   initStore(config);

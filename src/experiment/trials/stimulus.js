@@ -18,6 +18,7 @@ export const stimulus = {
     response_allowed_while_playing: true,
     data: () => {
       return {
+        // save_trial and assessment_stage are for firekit
         save_trial: true,
         assessment_stage: store.session.get("nextStimulus").subtask,
         is_practice_trial: store.session.get("nextStimulus").source === 'EGMA-practice'
@@ -32,21 +33,52 @@ export const stimulus = {
     </div>`,
     prompt_above_buttons: true,
     button_choices: () => {
-      const stimulus = store.session.get("nextStimulus");
-      const { target, distractors } = stimulus;
+      // const stimulus = store.session.get("nextStimulus");
+      // const { target, distractors } = stimulus;
 
-      const trialInfo = prepareChoices(target, distractors);
+      // const trialInfo = prepareChoices(target, distractors);
 
-      store.session.set("target", target);
-      store.session.set("correctResponseIndx", trialInfo.correctResponseIndx);
-      store.session.set("choices", trialInfo.choices);
+      // return trialInfo.choices;
 
-      return trialInfo.choices;
+      return [1,2,3,4]
     },
     button_html: () => "<button>%choice%</button>",
     on_load: () => {
-      const btnOption = store.session.get("config").buttonLayout;
-      document.getElementById("jspsych-audio-multi-response-btngroup").classList.add(`${btnOption}-layout`);
+      const {  buttonLayout, keyHelpers } = store.session.get("config");
+      const distractors = store.session.get("nextStimulus").distractors
+      
+      // replace this selector with whatever multi-response type trial you are using
+      const buttonContainer = document.getElementById('jspsych-audio-multi-response-btngroup')
+
+      const arrowKeyEmojis = ['↑', '←', '→', '↓']
+
+      // special case for 3 buttons - add thier respective positions in the grid
+      // if (distractors.length === 2) {
+        Array.from(buttonContainer.children).forEach((el, i) => {
+          if (buttonLayout === 'triple' || buttonLayout === 'diamond') {
+            el.classList.add(`button${i + 1}`)
+          }
+
+          if (keyHelpers) { 
+            // Margin on the actual button element
+            el.children[0].style.marginBottom = '1.5rem'
+          }
+
+          const arrowKeyBorder = document.createElement('div')
+          arrowKeyBorder.classList.add('arrow-key-border')
+
+          const arrowKey = document.createElement('p')
+          arrowKey.textContent = arrowKeyEmojis[i]
+          arrowKey.style.textAlign = 'center'
+          arrowKey.style.fontSize = '1.5rem'
+          arrowKey.style.margin = '0'
+          // arrowKey.classList.add('arrow-key')
+          arrowKeyBorder.appendChild(arrowKey)
+          el.appendChild(arrowKeyBorder)
+        })
+      // }
+
+      buttonContainer.classList.add(`${buttonLayout}-layout`);
 
       // update the trial number
       store.session.transact("trialNumSubtask", (oldVal) => oldVal + 1);

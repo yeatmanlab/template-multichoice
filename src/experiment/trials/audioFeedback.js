@@ -29,5 +29,5 @@ const audioResponse = {
 
 export const audioFeedback = {
   timeline: [audioResponse],
-  conditional_function: () => store.session.get("nextStimulus").source === 'EGMA-practice'
+  conditional_function: () => store.session.get("nextStimulus").source !== 'EGMA-practice'
 };
