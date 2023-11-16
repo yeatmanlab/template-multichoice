@@ -23,6 +23,8 @@ class MultichoiceTask {
     );
     store.session.set("config", config);
     await loadCorpus(config);
+    // TBI - To be implemented
+    // if (config.story) await getTranslations()
     return buildExperiment(config);
   }
 

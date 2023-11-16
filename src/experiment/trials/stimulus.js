@@ -33,12 +33,12 @@ export const stimulus = {
     </div>`,
     prompt_above_buttons: true,
     button_choices: () => {
-      // const stimulus = store.session.get("nextStimulus");
-      // const { target, distractors } = stimulus;
+      const stimulus = store.session.get("nextStimulus");
+      const { target, distractors } = stimulus;
 
-      // const trialInfo = prepareChoices(target, distractors);
+      const trialInfo = prepareChoices(target, distractors);
 
-      // return trialInfo.choices;
+      return trialInfo.choices;
 
       return [1,2,3,4]
     },

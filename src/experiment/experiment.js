@@ -17,7 +17,7 @@ import {
   introAndInstructions,
   practiceDone,
   createStory,
-} from "./trials/storySetup";
+} from "./trials/instructions";
 
 export function buildExperiment(config) {
   initTrialSaving(config);
