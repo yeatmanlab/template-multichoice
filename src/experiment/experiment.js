@@ -27,7 +27,10 @@ export function buildExperiment(config) {
     createStory();
   }
 
-  const timeline = [preloadTrials, ...initialTimeline.timeline];
+  const timeline = [
+    preloadTrials,
+    // ...initialTimeline.timeline
+  ];
 
   // this function adds all the trials in a subtask (and the mid-subtask breaks) to the timeline
   // fixationBlock:  an array of fixation trials (to fetch next stimulus) configured in stimulusLetterName.js
@@ -62,11 +65,12 @@ export function buildExperiment(config) {
 
       timeline.push(surveyBlock);
 
-      // add breaks
+
+
+      // Figure out what is going on here
       if (config.story) {
         if (i + 1 !== stimulusCounts.length) {
           // no break on the last block of the subtask
-          // add stimulus and break
           timeline.push(storyBreakList[breakNum]);
           breakNum += 1;
           if (breakNum === storyBreakList.length) {

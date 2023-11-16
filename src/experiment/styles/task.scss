@@ -98,12 +98,14 @@
           minmax(300px, 1fr)
         ); /* two columns of equal width */
         gap: 2rem;
+        place-items: center;
 
         div {
           box-sizing: border-box;
           margin: 0;
           padding: 0;
-          max-width: 100%;
+          // 100%
+          max-width: 50%;
 
           button {
             font-family: primerBold;
@@ -222,6 +224,8 @@
       .arrow-key-border {
         border: 1px solid black; /* Thin and black border */
         border-radius: 10px; /* Curved corners */
+        padding: 1rem !important;
+        max-width: 100% !important;
 
         .arrow-key {
           font-size: 1.5rem;

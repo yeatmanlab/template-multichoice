@@ -18,6 +18,7 @@ const numOfPracticeTrials = urlParams.get("practiceTrials");
 const numberOfTrials = urlParams.get("trials") === null ? null : parseInt(urlParams.get("trials"), 10);
 const stimulusBlocks = urlParams.get("blocks") === null ? null : parseInt(urlParams.get("blocks"), 10);
 // Boolean parameters
+const keyHelpers = stringToBoolean(urlParams.get('keyHelpers'), true)
 const story = stringToBoolean(urlParams.get("story"));
 const skipInstructions = stringToBoolean(urlParams.get("skip"), true)
 const sequentialPractice = stringToBoolean(urlParams.get("sequentialPractice"), true)
@@ -55,6 +56,7 @@ onAuthStateChanged(appKit.auth, (user) => {
       story,
       storyCorpus,
       stimulusBlocks,
+      keyHelpers
     };
 
     const taskInfo = {

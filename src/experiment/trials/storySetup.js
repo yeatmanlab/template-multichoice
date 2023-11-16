@@ -8,7 +8,6 @@ export let storyByLabel,
   introAndInstructions,
   storyBreakList,
   practiceDone,
-  blockBreaks,
   endTrial;
 
 export function createStory() {
@@ -67,16 +66,6 @@ export function createStory() {
 
   practiceDone = {
     timeline: [storyByLabel.surveyPostPractice],
-  };
-
-  blockBreaks = {
-    timeline: [
-      storyByLabel.break1,
-      storyByLabel.break2,
-      storyByLabel.break3,
-      storyByLabel.break4,
-      storyByLabel.break5,
-    ],
   };
 
   endTrial = {

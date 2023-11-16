@@ -104,6 +104,7 @@ export const initConfig = async (
     stimulusBlocks,
     numOfPracticeTrials,
     story,
+    keyHelpers
   } = cleanParams;
 
 
@@ -127,7 +128,8 @@ export const initConfig = async (
     task: taskName ?? 'egma-math',
     stimulusBlocks: stimulusBlocks ?? 3,
     numOfPracticeTrials: numOfPracticeTrials ?? 2,
-    story
+    story: story ?? false,
+    keyHelpers: keyHelpers ?? true
   };
 
   const updatedGameParams = Object.fromEntries(

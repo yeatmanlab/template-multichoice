@@ -55,26 +55,27 @@ export const stimulus = {
       // special case for 3 buttons - add thier respective positions in the grid
       // if (distractors.length === 2) {
         Array.from(buttonContainer.children).forEach((el, i) => {
+          // Add condition on triple for length (2)
           if (buttonLayout === 'triple' || buttonLayout === 'diamond') {
             el.classList.add(`button${i + 1}`)
           }
 
           if (keyHelpers) { 
             // Margin on the actual button element
-            el.children[0].style.marginBottom = '1.5rem'
+            el.children[0].style.marginBottom = '1rem'
+
+            const arrowKeyBorder = document.createElement('div')
+            arrowKeyBorder.classList.add('arrow-key-border')
+  
+            const arrowKey = document.createElement('p')
+            arrowKey.textContent = arrowKeyEmojis[i]
+            arrowKey.style.textAlign = 'center'
+            arrowKey.style.fontSize = '1.5rem'
+            arrowKey.style.margin = '0'
+            // arrowKey.classList.add('arrow-key')
+            arrowKeyBorder.appendChild(arrowKey)
+            el.appendChild(arrowKeyBorder)
           }
-
-          const arrowKeyBorder = document.createElement('div')
-          arrowKeyBorder.classList.add('arrow-key-border')
-
-          const arrowKey = document.createElement('p')
-          arrowKey.textContent = arrowKeyEmojis[i]
-          arrowKey.style.textAlign = 'center'
-          arrowKey.style.fontSize = '1.5rem'
-          arrowKey.style.margin = '0'
-          // arrowKey.classList.add('arrow-key')
-          arrowKeyBorder.appendChild(arrowKey)
-          el.appendChild(arrowKeyBorder)
         })
       // }
 
