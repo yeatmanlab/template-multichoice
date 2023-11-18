@@ -12,9 +12,9 @@ export const practiceFeedbackTrial = {
     if (!isPreviousCorrect) {
       return (
         `<div>
-          <p class="item-stimulus">${ store.session.get("nextStimulus").prompt }</p>
+          <p id="prompt">${ store.session.get("nextStimulus").prompt }</p>
           <br>
-          <p class="item-stimulus">${ store.session.get("nextStimulus").item }</p>
+          <p id="stimulus">${ store.session.get("nextStimulus").item }</p>
         </div>`
       )
     } else {

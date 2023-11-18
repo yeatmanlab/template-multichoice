@@ -1,4 +1,3 @@
-/* eslint-disable arrow-body-style */
 import jsPsychAudioKeyboardResponse from "@jspsych/plugin-audio-keyboard-response";
 import { getStimulus } from "../helperFunctions";
 import { mediaAssets } from "../experimentSetup";
@@ -24,12 +23,12 @@ const setupTrials = setupData.map((trial, i) => {
     type: jsPsychAudioKeyboardResponse,
     stimulus: () => mediaAssets.audio.nullAudio,
     prompt: function () {
-      return `<div class='stimulus_div'>
-                <p class='stimulus'> </p>
+      return `<div id='fixation-container'>
+                <p></p>
               </div>`;
     },
     choices: "NO_KEYS",
-    trial_duration: 10,
+    trial_duration: 200,
     data: {
       task: "fixation",
     },

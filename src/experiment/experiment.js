@@ -6,7 +6,7 @@ import { jsPsych } from "./jsPsych";
 import { preloadTrials, initializeCat } from "./experimentSetup";
 // trials
 import { stimulus } from "./trials/stimulus";
-import { setupMainTrial, setupPracticeTrial } from "./trials/setup";
+import { setupMainTrial, setupPracticeTrial } from "./trials/setupFixation";
 import { exitFullscreen } from "./trials/fullScreen";
 import { subTaskInitStimulus, subTaskInitPractice, } from "./trials/subTask";
 import { practiceFeedback } from "./trials/practiceFeedback";
@@ -79,13 +79,13 @@ export function buildExperiment(config) {
         }
       }
     } 
-
   };
 
   initializeCat();
   
   // story intro
   if (config.story) timeline.push(introAndInstructions);
+
 
   pushSubTaskToTimeline(
     subTaskInitPractice,

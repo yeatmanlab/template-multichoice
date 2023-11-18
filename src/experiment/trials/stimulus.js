@@ -25,12 +25,15 @@ export const stimulus = {
       }
     },
     stimulus: () => mediaAssets.audio.nullAudio,
-    prompt: () => `
-    <div>
-      <p class="item-stimulus">${ store.session.get("nextStimulus").prompt }</p>
-      <br>
-      <p class="item-stimulus">${ store.session.get("nextStimulus").item }</p>
-    </div>`,
+    prompt: () => {
+      return (`
+        <div>
+          <p id="prompt">${ store.session.get("nextStimulus").prompt }</p>
+          <br>
+          <p id="stimulus">${ store.session.get("nextStimulus").item }</p>
+        </div>`
+      )
+    },
     prompt_above_buttons: true,
     button_choices: () => {
       const stimulus = store.session.get("nextStimulus");
