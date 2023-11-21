@@ -25,6 +25,8 @@ class MultichoiceTask {
     await loadCorpus(config);
     // TBI - To be implemented
     // if (config.story) await getTranslations()
+    
+    // build the trials
     return buildExperiment(config);
   }
 

@@ -1,11 +1,7 @@
 import jsPsychAudioMultiResponse from "@jspsych-contrib/plugin-audio-multi-response";
 import store from "store2";
 import { jsPsych } from "../jsPsych";
-import {
-  shuffle,
-  updateProgressBar,
-  addItemToSortedStoreList,
-} from "../helperFunctions";
+import { updateProgressBar, addItemToSortedStoreList, } from "../helperFunctions";
 import { mediaAssets } from "../experimentSetup";
 import { isPractice } from "./subTask";
 import { prepareChoices } from "../helperFunctions";
@@ -43,7 +39,7 @@ export const stimulus = {
 
       return trialInfo.choices;
 
-      return [1,2,3,4]
+      // return [1,2,3,4]
     },
     button_html: () => "<button>%choice%</button>",
     on_load: () => {
